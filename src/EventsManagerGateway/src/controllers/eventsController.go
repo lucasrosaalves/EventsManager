@@ -1,31 +1,27 @@
 package controllers
 
 import (
-	"eventsmanagergateway/src/useCases"
+	"eventsmanagergateway/src/domain/eventAggregate"
 
 	"github.com/gin-gonic/gin"
 )
 
 type EventController struct {
-	createEventUseCase useCases.ICreateEventUseCase
+	createEventUseCase eventAggregate.ICreateEventUseCase
 }
 
-func NewEventController() *EventController {
+func NewEventController(CreateEventUseCase eventAggregate.ICreateEventUseCase) *EventController {
 	return &EventController{
-		createEventUseCase: &useCases.CreateEventUseCase{},
+		createEventUseCase: CreateEventUseCase,
 	}
 }
 
 func (e *EventController) Post(c *gin.Context) {
+	request := &eventAggregate.Event{}
 
-	var eventRequest struct {
-		Timestamp string `json:"timestamp" binding:"required"`
-		Tag       string `json:"tag" binding:"required"`
-		Value     string `json:"value"`
-	}
-	c.Bind(&eventRequest)
+	c.Bind(request)
 
-	status := e.createEventUseCase.Execute(eventRequest.Timestamp, eventRequest.Tag, eventRequest.Value)
+	status := e.createEventUseCase.Execute(request.Timestamp, request.Tag, request.Value)
 
 	c.JSON(200, gin.H{
 		"Status": status,
