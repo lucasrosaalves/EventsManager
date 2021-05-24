@@ -6,17 +6,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type EventController struct {
+type EventsController struct {
 	createEventUseCase eventAggregate.ICreateEventUseCase
 }
 
-func NewEventController(CreateEventUseCase eventAggregate.ICreateEventUseCase) *EventController {
-	return &EventController{
+func NewEventsController(CreateEventUseCase eventAggregate.ICreateEventUseCase) *EventsController {
+	return &EventsController{
 		createEventUseCase: CreateEventUseCase,
 	}
 }
 
-func (e *EventController) Post(c *gin.Context) {
+func (e *EventsController) Post(c *gin.Context) {
 	request := &eventAggregate.Event{}
 
 	c.Bind(request)

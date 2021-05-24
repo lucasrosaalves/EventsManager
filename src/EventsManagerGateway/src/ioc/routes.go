@@ -1,8 +1,6 @@
-package routes
+package ioc
 
 import (
-	"eventsmanagergateway/src/infra/dependencyInjection"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,7 +9,7 @@ func UseRoutes(r *gin.Engine) {
 }
 
 func useEventsController(r *gin.Engine) {
-	c := dependencyInjection.BuildEventsController()
+	c := buildEventsController()
 
 	r.POST("/events", c.Post)
 }
