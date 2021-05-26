@@ -1,13 +1,13 @@
 package main
 
 import (
-	"eventsmanagergateway/src/ioc"
+	"eventsmanagergateway/src/server"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	r := gin.Default()
-	ioc.UseRoutes(r)
+	server.UseRoutes(r)
 	r.Run(":8080")
 }

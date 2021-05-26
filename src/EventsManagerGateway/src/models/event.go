@@ -1,4 +1,4 @@
-package eventAggregate
+package models
 
 type Event struct {
 	Timestamp string `json:"timestamp" binding:"required"`

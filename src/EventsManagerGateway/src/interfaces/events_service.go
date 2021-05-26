@@ -1,5 +1,5 @@
-package eventAggregate
+package interfaces
 
-type ICreateEventUseCase interface {
+type IEventsService interface {
 	Execute(timestamp string, tag string, value string) bool
 }
