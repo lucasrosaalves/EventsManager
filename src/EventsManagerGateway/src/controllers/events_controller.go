@@ -1,30 +1,26 @@
 package controllers
 
 import (
-	"eventsmanagergateway/src/interfaces"
-	"eventsmanagergateway/src/models"
+	"eventsmanagergateway/src/ioc"
+	"eventsmanagergateway/src/usecases"
 
 	"github.com/gin-gonic/gin"
 )
 
-type EventsController struct {
-	eventsService interfaces.IEventsService
-}
+func PostEvent(c *gin.Context) {
+	request := &usecases.CreateEventRequest{}
+	err := c.Bind(request)
 
-func NewEventsController(eventsService interfaces.IEventsService) *EventsController {
-	return &EventsController{
-		eventsService: eventsService,
+	useCase := ioc.BuildCreateEvent()
+
+	err = useCase.Execute(request)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"Message": err.Error(),
+		})
+	} else {
+		c.Status(202)
 	}
-}
 
-func (e *EventsController) Post(c *gin.Context) {
-	request := &models.Event{}
-
-	c.Bind(request)
-
-	status := e.eventsService.Execute(request.Timestamp, request.Tag, request.Value)
-
-	c.JSON(200, gin.H{
-		"Status": status,
-	})
 }
