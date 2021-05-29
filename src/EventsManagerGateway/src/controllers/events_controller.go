@@ -9,7 +9,7 @@ import (
 
 func PostEvent(c *gin.Context) {
 	request := &usecases.CreateEventRequest{}
-	err := c.Bind(request)
+	err := c.ShouldBindJSON(request)
 
 	useCase := ioc.BuildCreateEvent()
 
