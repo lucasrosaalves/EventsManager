@@ -7,11 +7,12 @@ import (
 	"github.com/streadway/amqp"
 )
 
-var RabbitMqChannel *amqp.Channel
-
 const (
 	queueName = "raw_events"
 )
+
+var Connection *amqp.Connection
+var Channel *amqp.Channel
 
 type RabbitMqClient struct {
 }
@@ -28,7 +29,7 @@ func (*RabbitMqClient) Send(event *entities.Event) error {
 		return err
 	}
 
-	return RabbitMqChannel.Publish(
+	return Channel.Publish(
 		"",     // exchange
 		q.Name, // routing key
 		false,  // mandatory
@@ -40,7 +41,7 @@ func (*RabbitMqClient) Send(event *entities.Event) error {
 }
 
 func createQueue() (amqp.Queue, error) {
-	return RabbitMqChannel.QueueDeclare(
+	return Channel.QueueDeclare(
 		queueName, // name
 		false,     // durable
 		false,     // delete when unused

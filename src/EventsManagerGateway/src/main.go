@@ -8,28 +8,23 @@ import (
 	"github.com/streadway/amqp"
 )
 
-var Connection amqp.Connection
-var Channel amqp.Channel
-
 func main() {
 	r := gin.Default()
 
 	useRabbitMq()
 	useRoutes(r)
 
-	defer Connection.Close()
-	defer Channel.Close()
+	defer infra.Connection.Close()
+	defer infra.Channel.Close()
 
 	r.Run(":8080")
 }
 
-func useRabbitMq() {
-	Connection, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	Channel, _ := Connection.Channel()
-
-	infra.RabbitMqChannel = Channel
-}
-
 func useRoutes(r *gin.Engine) {
 	r.POST("/events", controllers.PostEvent)
+}
+
+func useRabbitMq() {
+	infra.Connection, _ = amqp.Dial("amqp://guest:guest@localhost:5672/")
+	infra.Channel, _ = infra.Connection.Channel()
 }

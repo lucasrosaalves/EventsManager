@@ -1,8 +1,7 @@
 package utils
 
 import (
-	"bytes"
-	"encoding/gob"
+	"encoding/json"
 
 	uuid "github.com/nu7hatch/gouuid"
 )
@@ -18,9 +17,7 @@ func GenerateGuid() string {
 }
 
 func GenerateBytes(obj interface{}) []byte {
-	var b bytes.Buffer
-	enc := gob.NewEncoder(&b)
-	enc.Encode(obj)
+	payload, _ := json.Marshal(obj)
 
-	return b.Bytes()
+	return payload
 }
