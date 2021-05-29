@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const (
+	queueName = "event.received"
+)
+
 type Event struct {
 	Timestamp time.Time `json:"timestamp"`
 	Country   string    `json:"country"`
@@ -30,6 +34,10 @@ func NewEvent(timestamp int64, tag string, value string, correlationId string) (
 		Value:     value,
 		MetaData:  NewMetaData(correlationId),
 	}, nil
+}
+
+func (*Event) GetQueueName() string {
+	return queueName
 }
 
 func handleTag(tag string) (string, string, string, error) {

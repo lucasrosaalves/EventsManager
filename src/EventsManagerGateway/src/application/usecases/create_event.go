@@ -25,5 +25,5 @@ func (s *CreateEvent) Execute(timestamp int64, tag string, value string) error {
 		return err
 	}
 
-	return s.messagingService.Send(event)
+	return s.messagingService.Send(event, event.GetQueueName())
 }

@@ -24,12 +24,12 @@ func useRabbitMq() {
 	Channel, _ := Connection.Channel()
 
 	q, _ := Channel.QueueDeclare(
-		"raw_events", // name
-		false,        // durable
-		false,        // delete when unused
-		false,        // exclusive
-		false,        // no-wait
-		nil,          // arguments
+		"event.received", // name
+		false,            // durable
+		false,            // delete when unused
+		false,            // exclusive
+		false,            // no-wait
+		nil,              // arguments
 	)
 	msgs, _ := Channel.Consume(
 		q.Name, // queue

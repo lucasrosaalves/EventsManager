@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	response "eventsmanagergateway/src/application/responses"
 	"eventsmanagergateway/src/domain"
 
 	"github.com/gin-gonic/gin"
@@ -31,12 +30,15 @@ func (e *EventsController) post(c *gin.Context) {
 	payload := &request{}
 	err := c.ShouldBindJSON(payload)
 
+	if err != nil {
+		BadRequest(c, err)
+	}
+
 	err = e.createEventUseCase.Execute(payload.Timestamp, payload.Tag, payload.Value)
 
 	if err != nil {
-		c.JSON(400, response.NewBadRequest(err))
+		BadRequest(c, err)
 	} else {
-		c.Status(202)
+		Ok(c)
 	}
-
 }

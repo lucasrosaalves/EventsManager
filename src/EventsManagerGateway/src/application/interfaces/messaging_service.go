@@ -1,5 +1,5 @@
 package interfaces
 
 type MessagingService interface {
-	Send(obj interface{}) error
+	Send(obj interface{}, queueName string) error
 }

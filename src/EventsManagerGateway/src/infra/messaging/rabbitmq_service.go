@@ -1,42 +1,47 @@
 package messaging
 
 import (
+	"eventsmanagergateway/src/application/interfaces"
 	"eventsmanagergateway/src/application/utils"
 
 	"github.com/streadway/amqp"
 )
 
-const (
-	queueName = "raw_events"
-)
-
 type RabbitMqService struct {
 }
 
-func NewRabbitMqClient() *RabbitMqService {
+func NewRabbitMqClient() interfaces.MessagingService {
 	return &RabbitMqService{}
 }
 
-func (*RabbitMqService) Send(obj interface{}) error {
-
-	q, err := createQueue()
+func (*RabbitMqService) Send(obj interface{}, queueName string) error {
+	queue, err := createQueue(queueName)
 
 	if err != nil {
 		return err
 	}
 
-	return RabbitMqConnection.Channel.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        utils.GenerateBytes(obj),
-		})
+	publishObj := createObject(obj)
+	return publish(publishObj, queue, queueName)
 }
 
-func createQueue() (amqp.Queue, error) {
+func publish(publishObj amqp.Publishing, queue amqp.Queue, queueName string) error {
+	return RabbitMqConnection.Channel.Publish(
+		"",         // exchange
+		queue.Name, // routing key
+		false,      // mandatory
+		false,      // immediate
+		publishObj)
+}
+
+func createObject(obj interface{}) amqp.Publishing {
+	return amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        utils.GenerateBytes(obj),
+	}
+}
+
+func createQueue(queueName string) (amqp.Queue, error) {
 	return RabbitMqConnection.Channel.QueueDeclare(
 		queueName, // name
 		false,     // durable

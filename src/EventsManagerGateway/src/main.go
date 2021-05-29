@@ -7,6 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	port        string = ":8080"
+	rabbitMqUrl string = "amqp://guest:guest@localhost:5672/"
+)
+
 func main() {
 	r := gin.Default()
 
@@ -16,7 +21,7 @@ func main() {
 	defer messaging.RabbitMqConnection.Connection.Close()
 	defer messaging.RabbitMqConnection.Channel.Close()
 
-	r.Run(":8080")
+	r.Run(port)
 }
 
 func useRoutes(r *gin.Engine) {
@@ -25,5 +30,5 @@ func useRoutes(r *gin.Engine) {
 }
 
 func useRabbitMq() {
-	messaging.CreateRabbitMqConnection("amqp://guest:guest@localhost:5672/")
+	messaging.CreateRabbitMqConnection(rabbitMqUrl)
 }
