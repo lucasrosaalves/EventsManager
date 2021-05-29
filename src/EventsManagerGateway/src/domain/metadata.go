@@ -1,7 +1,6 @@
-package entities
+package domain
 
 import (
-	"eventsmanagergateway/src/utils"
 	"time"
 )
 
@@ -10,9 +9,9 @@ type MetaData struct {
 	StartDate     time.Time `json:"start_date"`
 }
 
-func NewMetaData() *MetaData {
+func NewMetaData(correlationId string) *MetaData {
 	return &MetaData{
-		CorrelationId: utils.GenerateGuid(),
+		CorrelationId: correlationId,
 		StartDate:     time.Now(),
 	}
 }

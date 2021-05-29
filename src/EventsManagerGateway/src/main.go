@@ -1,8 +1,8 @@
 package main
 
 import (
-	"eventsmanagergateway/src/controllers"
-	"eventsmanagergateway/src/infra"
+	"eventsmanagergateway/src/infra/ioc"
+	"eventsmanagergateway/src/infra/messaging"
 
 	"github.com/gin-gonic/gin"
 	"github.com/streadway/amqp"
@@ -14,17 +14,18 @@ func main() {
 	useRabbitMq()
 	useRoutes(r)
 
-	defer infra.Connection.Close()
-	defer infra.Channel.Close()
+	defer messaging.Connection.Close()
+	defer messaging.Channel.Close()
 
 	r.Run(":8080")
 }
 
 func useRoutes(r *gin.Engine) {
-	r.POST("/events", controllers.PostEvent)
+	ec := ioc.MakeEventsController()
+	ec.UseRoutes(r)
 }
 
 func useRabbitMq() {
-	infra.Connection, _ = amqp.Dial("amqp://guest:guest@localhost:5672/")
-	infra.Channel, _ = infra.Connection.Channel()
+	messaging.Connection, _ = amqp.Dial("amqp://guest:guest@localhost:5672/")
+	messaging.Channel, _ = messaging.Connection.Channel()
 }

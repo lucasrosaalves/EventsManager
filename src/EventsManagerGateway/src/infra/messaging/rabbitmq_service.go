@@ -1,8 +1,7 @@
-package infra
+package messaging
 
 import (
-	"eventsmanagergateway/src/entities"
-	"eventsmanagergateway/src/utils"
+	"eventsmanagergateway/src/application/utils"
 
 	"github.com/streadway/amqp"
 )
@@ -14,14 +13,14 @@ const (
 var Connection *amqp.Connection
 var Channel *amqp.Channel
 
-type RabbitMqClient struct {
+type RabbitMqService struct {
 }
 
-func NewRabbitMqClient() *RabbitMqClient {
-	return &RabbitMqClient{}
+func NewRabbitMqClient() *RabbitMqService {
+	return &RabbitMqService{}
 }
 
-func (*RabbitMqClient) Send(event *entities.Event) error {
+func (*RabbitMqService) Send(obj interface{}) error {
 
 	q, err := createQueue()
 
@@ -36,7 +35,7 @@ func (*RabbitMqClient) Send(event *entities.Event) error {
 		false,  // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
-			Body:        utils.GenerateBytes(event),
+			Body:        utils.GenerateBytes(obj),
 		})
 }
 

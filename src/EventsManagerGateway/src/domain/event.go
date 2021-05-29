@@ -1,4 +1,4 @@
-package entities
+package domain
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ type Event struct {
 	MetaData  *MetaData `json:"metaData"`
 }
 
-func NewEvent(timestamp int64, tag string, value string) (*Event, error) {
+func NewEvent(timestamp int64, tag string, value string, correlationId string) (*Event, error) {
 	country, region, sensor, tagError := handleTag(tag)
 
 	if tagError != nil {
@@ -28,7 +28,7 @@ func NewEvent(timestamp int64, tag string, value string) (*Event, error) {
 		Region:    region,
 		Sensor:    sensor,
 		Value:     value,
-		MetaData:  NewMetaData(),
+		MetaData:  NewMetaData(correlationId),
 	}, nil
 }
 
