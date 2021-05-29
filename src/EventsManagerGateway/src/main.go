@@ -5,7 +5,6 @@ import (
 	"eventsmanagergateway/src/infra/messaging"
 
 	"github.com/gin-gonic/gin"
-	"github.com/streadway/amqp"
 )
 
 func main() {
@@ -14,8 +13,8 @@ func main() {
 	useRabbitMq()
 	useRoutes(r)
 
-	defer messaging.Connection.Close()
-	defer messaging.Channel.Close()
+	defer messaging.RabbitMqConnection.Connection.Close()
+	defer messaging.RabbitMqConnection.Channel.Close()
 
 	r.Run(":8080")
 }
@@ -26,6 +25,5 @@ func useRoutes(r *gin.Engine) {
 }
 
 func useRabbitMq() {
-	messaging.Connection, _ = amqp.Dial("amqp://guest:guest@localhost:5672/")
-	messaging.Channel, _ = messaging.Connection.Channel()
+	messaging.CreateRabbitMqConnection("amqp://guest:guest@localhost:5672/")
 }

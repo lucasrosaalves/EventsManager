@@ -10,9 +10,6 @@ const (
 	queueName = "raw_events"
 )
 
-var Connection *amqp.Connection
-var Channel *amqp.Channel
-
 type RabbitMqService struct {
 }
 
@@ -28,7 +25,7 @@ func (*RabbitMqService) Send(obj interface{}) error {
 		return err
 	}
 
-	return Channel.Publish(
+	return RabbitMqConnection.Channel.Publish(
 		"",     // exchange
 		q.Name, // routing key
 		false,  // mandatory
@@ -40,7 +37,7 @@ func (*RabbitMqService) Send(obj interface{}) error {
 }
 
 func createQueue() (amqp.Queue, error) {
-	return Channel.QueueDeclare(
+	return RabbitMqConnection.Channel.QueueDeclare(
 		queueName, // name
 		false,     // durable
 		false,     // delete when unused
