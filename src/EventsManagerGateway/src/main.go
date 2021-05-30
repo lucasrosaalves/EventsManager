@@ -26,7 +26,7 @@ func main() {
 }
 
 func useRoutes(r *gin.Engine) {
-	controllers.NewEventsController(r, usecases.NewCreateEvent(messaging.NewRabbitMqService()))
+	controllers.NewEventsController(r, usecases.NewEventsHandler(messaging.NewRabbitMqService()))
 }
 
 func useRabbitMq() {

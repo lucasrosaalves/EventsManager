@@ -7,10 +7,10 @@ import (
 )
 
 type EventsController struct {
-	createEventUseCase domain.CreateEventUseCase
+	createEventUseCase domain.EventsHandler
 }
 
-func NewEventsController(r *gin.Engine, createEventUseCase domain.CreateEventUseCase) {
+func NewEventsController(r *gin.Engine, createEventUseCase domain.EventsHandler) {
 	controller := &EventsController{
 		createEventUseCase: createEventUseCase,
 	}
