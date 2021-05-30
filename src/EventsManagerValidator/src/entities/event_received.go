@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type Event struct {
+type EventReceived struct {
 	Timestamp time.Time `json:"timestamp"`
 	Country   string    `json:"country"`
 	Region    string    `json:"region"`
