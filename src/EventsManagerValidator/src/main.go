@@ -1,6 +1,7 @@
 package main
 
 import (
+	"eventsmanagervalidator/src/application/usecases"
 	"eventsmanagervalidator/src/controllers"
 	"eventsmanagervalidator/src/infra/messaging"
 
@@ -16,8 +17,11 @@ var Channel amqp.Channel
 
 func main() {
 	messaging.CreateRabbitMqConnection(rabbitMqUrl)
+	messagingService := messaging.NewRabbitMqService()
 
-	controllers.NewEventsController(messaging.NewRabbitMqService())
+	controllers.NewEventsController(
+		usecases.NewEventsHandler(messagingService),
+		messagingService)
 
 	defer messaging.RabbitMqConnection.Connection.Close()
 	defer messaging.RabbitMqConnection.Channel.Close()

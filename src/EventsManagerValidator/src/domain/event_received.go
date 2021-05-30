@@ -1,4 +1,4 @@
-package entities
+package domain
 
 import (
 	"time"
@@ -10,5 +10,5 @@ type EventReceived struct {
 	RegionName  string    `json:"region_name"`
 	SensorName  string    `json:"sensor_name"`
 	Value       string    `json:"value"`
-	MetaData    *MetaData `json:"metaData"`
+	MetaData    MetaData  `json:"metaData"`
 }
