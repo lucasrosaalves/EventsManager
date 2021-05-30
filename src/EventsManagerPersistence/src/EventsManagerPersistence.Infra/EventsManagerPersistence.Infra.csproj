@@ -4,4 +4,8 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EventsManagerPersistence.Application\EventsManagerPersistence.Application.csproj" />
+  </ItemGroup>
+
 </Project>
