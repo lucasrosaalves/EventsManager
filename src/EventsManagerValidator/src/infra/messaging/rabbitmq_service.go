@@ -1,18 +1,34 @@
 package messaging
 
-import "log"
+import (
+	"eventsmanagervalidator/src/application/interfaces"
+	"eventsmanagervalidator/src/application/utils"
 
-func Consume(queueName string, result chan []byte) {
+	"github.com/streadway/amqp"
+)
+
+type RabbitMqService struct {
+}
+
+func NewRabbitMqService() interfaces.MessagingService {
+	return &RabbitMqService{}
+}
+
+func (*RabbitMqService) Send(obj interface{}, queueName string) error {
+	queue, err := createQueue(queueName)
+
+	if err != nil {
+		return err
+	}
+
+	publishObj := createObject(obj)
+	return publish(publishObj, queue, queueName)
+}
+
+func (*RabbitMqService) Subscribe(queueName string, c chan []byte) {
 	channel := RabbitMqConnection.Channel
 
-	q, _ := channel.QueueDeclare(
-		queueName, // name
-		false,     // durable
-		false,     // delete when unused
-		false,     // exclusive
-		false,     // no-wait
-		nil,       // arguments
-	)
+	q, _ := createQueue(queueName)
 
 	msgs, _ := channel.Consume(
 		q.Name, // queue
@@ -24,14 +40,34 @@ func Consume(queueName string, result chan []byte) {
 		nil,    // args
 	)
 
-	forever := make(chan bool)
+	for d := range msgs {
+		c <- d.Body
+	}
+}
 
-	go func() {
-		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
-			result <- d.Body
-		}
-	}()
+func publish(publishObj amqp.Publishing, queue amqp.Queue, queueName string) error {
+	return RabbitMqConnection.Channel.Publish(
+		"",         // exchange
+		queue.Name, // routing key
+		false,      // mandatory
+		false,      // immediate
+		publishObj)
+}
 
-	<-forever
+func createObject(obj interface{}) amqp.Publishing {
+	return amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        utils.GenerateBytes(obj),
+	}
+}
+
+func createQueue(queueName string) (amqp.Queue, error) {
+	return RabbitMqConnection.Channel.QueueDeclare(
+		queueName, // name
+		false,     // durable
+		false,     // delete when unused
+		false,     // exclusive
+		false,     // no-wait
+		nil,       // arguments
+	)
 }

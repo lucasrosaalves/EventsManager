@@ -1,63 +1,24 @@
 package main
 
 import (
-	"encoding/json"
-	"eventsmanagervalidator/src/entities"
-	"log"
+	"eventsmanagervalidator/src/controllers"
+	"eventsmanagervalidator/src/infra/messaging"
 
 	"github.com/streadway/amqp"
+)
+
+const (
+	rabbitMqUrl string = "amqp://guest:guest@localhost:5672/"
 )
 
 var Connection amqp.Connection
 var Channel amqp.Channel
 
 func main() {
+	messaging.CreateRabbitMqConnection(rabbitMqUrl)
 
-	useRabbitMq()
+	controllers.NewEventsController(messaging.NewRabbitMqService())
 
-	defer Connection.Close()
-	defer Channel.Close()
-}
-
-func useRabbitMq() {
-	Connection, _ := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	Channel, _ := Connection.Channel()
-
-	q, _ := Channel.QueueDeclare(
-		"event.received", // name
-		false,            // durable
-		false,            // delete when unused
-		false,            // exclusive
-		false,            // no-wait
-		nil,              // arguments
-	)
-	msgs, _ := Channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
-	)
-
-	forever := make(chan bool)
-
-	go func() {
-		for d := range msgs {
-			obj := entities.Event{}
-
-			err := json.Unmarshal(d.Body, &obj)
-
-			if err != nil {
-				log.Printf(err.Error())
-			}
-			if err == nil {
-				log.Printf("Received a message: %s", d.Body)
-			}
-		}
-	}()
-
-	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
-	<-forever
+	defer messaging.RabbitMqConnection.Connection.Close()
+	defer messaging.RabbitMqConnection.Channel.Close()
 }

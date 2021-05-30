@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"eventsmanagervalidator/src/application/interfaces"
 	"eventsmanagervalidator/src/entities"
-	"eventsmanagervalidator/src/infra/messaging"
 	"log"
 )
 
@@ -18,24 +18,23 @@ func (e *EventsController) post(payload entities.EventReceived) {
 
 }
 
-func NewEventsController() {
-	response := make(chan []byte)
-	messaging.Consume(queueName, response)
+func NewEventsController(messagingService interfaces.MessagingService) {
+	msgs := make(chan []byte)
+
+	go messagingService.Subscribe(queueName, msgs)
+
+	controller := &EventsController{}
 
 	forever := make(chan bool)
-
 	go func() {
-		for d := range response {
+		for d := range msgs {
+			log.Printf("Received a message: %s", d)
 
-			obj := entities.EventReceived{}
+			payload := entities.EventReceived{}
 
-			err := json.Unmarshal(d, &obj)
-
-			if err != nil {
-				log.Printf(err.Error())
-			}
+			err := json.Unmarshal(d, &payload)
 			if err == nil {
-				log.Printf("Received a message: %s", d)
+				controller.post(payload)
 			}
 		}
 	}()

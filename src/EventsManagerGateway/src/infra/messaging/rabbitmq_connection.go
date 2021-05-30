@@ -4,14 +4,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-var RabbitMqConnection *rabbitMqConnection
+var RabbitMqContext *rabbitMqContext
 
-type rabbitMqConnection struct {
+type rabbitMqContext struct {
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
 }
 
-func CreateRabbitMqConnection(url string) error {
+func CreateRabbitMqContext(url string) error {
 	connection, err := amqp.Dial(url)
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func CreateRabbitMqConnection(url string) error {
 		return err
 	}
 
-	RabbitMqConnection = &rabbitMqConnection{
+	RabbitMqContext = &rabbitMqContext{
 		Connection: connection,
 		Channel:    channel,
 	}

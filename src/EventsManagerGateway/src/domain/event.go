@@ -11,12 +11,12 @@ const (
 )
 
 type Event struct {
-	Timestamp time.Time `json:"timestamp"`
-	Country   string    `json:"country"`
-	Region    string    `json:"region"`
-	Sensor    string    `json:"sensor"`
-	Value     string    `json:"value"`
-	MetaData  *MetaData `json:"metaData"`
+	Timestamp   time.Time `json:"timestamp"`
+	CountryName string    `json:"country_name"`
+	RegionName  string    `json:"region_name"`
+	SensorName  string    `json:"sensor_name"`
+	Value       string    `json:"value"`
+	MetaData    *MetaData `json:"metaData"`
 }
 
 func NewEvent(timestamp int64, tag string, value string, correlationId string) (*Event, error) {
@@ -27,12 +27,12 @@ func NewEvent(timestamp int64, tag string, value string, correlationId string) (
 	}
 
 	return &Event{
-		Timestamp: time.Unix(timestamp, 0),
-		Country:   country,
-		Region:    region,
-		Sensor:    sensor,
-		Value:     value,
-		MetaData:  NewMetaData(correlationId),
+		Timestamp:   time.Unix(timestamp, 0),
+		CountryName: country,
+		RegionName:  region,
+		SensorName:  sensor,
+		Value:       value,
+		MetaData:    NewMetaData(correlationId),
 	}, nil
 }
 

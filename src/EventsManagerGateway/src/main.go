@@ -19,16 +19,16 @@ func main() {
 	useRabbitMq()
 	useRoutes(r)
 
-	defer messaging.RabbitMqConnection.Connection.Close()
-	defer messaging.RabbitMqConnection.Channel.Close()
+	defer messaging.RabbitMqContext.Connection.Close()
+	defer messaging.RabbitMqContext.Channel.Close()
 
 	r.Run(port)
 }
 
 func useRoutes(r *gin.Engine) {
-	controllers.NewEventsController(r, usecases.NewCreateEvent(messaging.NewRabbitMqClient()))
+	controllers.NewEventsController(r, usecases.NewCreateEvent(messaging.NewRabbitMqService()))
 }
 
 func useRabbitMq() {
-	messaging.CreateRabbitMqConnection(rabbitMqUrl)
+	messaging.CreateRabbitMqContext(rabbitMqUrl)
 }

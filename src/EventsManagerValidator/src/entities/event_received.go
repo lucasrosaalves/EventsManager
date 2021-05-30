@@ -5,10 +5,10 @@ import (
 )
 
 type EventReceived struct {
-	Timestamp time.Time `json:"timestamp"`
-	Country   string    `json:"country"`
-	Region    string    `json:"region"`
-	Sensor    string    `json:"sensor"`
-	Value     string    `json:"value"`
-	MetaData  *MetaData `json:"metaData"`
+	Timestamp   time.Time `json:"timestamp"`
+	CountryName string    `json:"country_name"`
+	RegionName  string    `json:"region_name"`
+	SensorName  string    `json:"sensor_name"`
+	Value       string    `json:"value"`
+	MetaData    *MetaData `json:"metaData"`
 }

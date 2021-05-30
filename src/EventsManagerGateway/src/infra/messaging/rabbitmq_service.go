@@ -10,7 +10,7 @@ import (
 type RabbitMqService struct {
 }
 
-func NewRabbitMqClient() interfaces.MessagingService {
+func NewRabbitMqService() interfaces.MessagingService {
 	return &RabbitMqService{}
 }
 
@@ -26,7 +26,7 @@ func (*RabbitMqService) Send(obj interface{}, queueName string) error {
 }
 
 func publish(publishObj amqp.Publishing, queue amqp.Queue, queueName string) error {
-	return RabbitMqConnection.Channel.Publish(
+	return RabbitMqContext.Channel.Publish(
 		"",         // exchange
 		queue.Name, // routing key
 		false,      // mandatory
@@ -42,7 +42,7 @@ func createObject(obj interface{}) amqp.Publishing {
 }
 
 func createQueue(queueName string) (amqp.Queue, error) {
-	return RabbitMqConnection.Channel.QueueDeclare(
+	return RabbitMqContext.Channel.QueueDeclare(
 		queueName, // name
 		false,     // durable
 		false,     // delete when unused
