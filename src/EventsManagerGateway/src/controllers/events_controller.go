@@ -6,18 +6,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (e *EventsController) UseRoutes(r *gin.Engine) {
-	r.POST("/events", e.post)
-}
-
 type EventsController struct {
 	createEventUseCase domain.CreateEventUseCase
 }
 
-func NewEventsController(createEventUseCase domain.CreateEventUseCase) *EventsController {
-	return &EventsController{
+func NewEventsController(r *gin.Engine, createEventUseCase domain.CreateEventUseCase) {
+	controller := &EventsController{
 		createEventUseCase: createEventUseCase,
 	}
+
+	r.POST("/events", controller.post)
 }
 
 func (e *EventsController) post(c *gin.Context) {
@@ -28,7 +26,7 @@ func (e *EventsController) post(c *gin.Context) {
 	}
 
 	payload := &request{}
-	err := c.ShouldBindJSON(payload)
+	err := BindJson(c, payload)
 
 	if err != nil {
 		BadRequest(c, err)

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"eventsmanagergateway/src/infra/ioc"
+	"eventsmanagergateway/src/application/usecases"
+	"eventsmanagergateway/src/controllers"
 	"eventsmanagergateway/src/infra/messaging"
 
 	"github.com/gin-gonic/gin"
@@ -25,8 +26,7 @@ func main() {
 }
 
 func useRoutes(r *gin.Engine) {
-	ec := ioc.MakeEventsController()
-	ec.UseRoutes(r)
+	controllers.NewEventsController(r, usecases.NewCreateEvent(messaging.NewRabbitMqClient()))
 }
 
 func useRabbitMq() {
