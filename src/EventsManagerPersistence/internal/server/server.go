@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"time"
-
-	"github.com/gorilla/mux"
 )
 
 type Server struct {
@@ -17,11 +15,7 @@ func New() *Server {
 }
 
 func (*Server) Run() {
-	router := mux.NewRouter()
-
-	for _, r := range ConfigureRoutes() {
-		router.HandleFunc(r.Path, r.Handler).Methods(r.Method)
-	}
+	router := configureRoutes()
 
 	srv := &http.Server{
 		Handler:      router,

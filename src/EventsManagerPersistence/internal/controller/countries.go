@@ -1,27 +1,23 @@
 package controller
 
 import (
-	"encoding/json"
-	"eventsmanagerpersistence/internal/entity"
+	"eventsmanagerpersistence/internal/usecases/query"
 	"net/http"
 )
 
 type CountriesController struct {
+	getCountriesQuery query.GetCountries
 }
 
-func NewCountriesController() *CountriesController {
-	return &CountriesController{}
+func NewCountriesController(getCountriesQuery query.GetCountries) *CountriesController {
+	return &CountriesController{
+		getCountriesQuery: getCountriesQuery,
+	}
 }
 
-func (c *CountriesController) GetAll(w http.ResponseWriter, r *http.Request) {
+func (c *CountriesController) GetAll(writer http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "application/json")
+	countries := c.getCountriesQuery.Handle()
 
-	content, _ := json.Marshal(&entity.Country{
-		Id:   "1",
-		Code: "BR",
-		Name: "Brazil",
-	})
-	w.WriteHeader(200)
-	w.Write(content)
+	Ok(writer, countries)
 }
