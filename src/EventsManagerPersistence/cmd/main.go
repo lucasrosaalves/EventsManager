@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type result struct {
-	data string
+type Result struct {
+	Data string
 }
 
 func main() {
@@ -19,8 +19,8 @@ func main() {
 
 		w.Header().Set("Content-Type", "application/json")
 
-		content, _ := json.Marshal(&result{
-			data: "OK",
+		content, _ := json.Marshal(&Result{
+			Data: "OK",
 		})
 		w.WriteHeader(200)
 		w.Write(content)
