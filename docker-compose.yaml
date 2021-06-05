@@ -1,8 +1,21 @@
 version: "3"
 services:
- rabbitmq:
+  rabbitmq:
     image: "rabbitmq:3-management"
     container_name: "rabbitmq"
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - events-manager-network  
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+    networks:
+      - events-manager-network  
+networks: 
+  events-manager-network:
+    driver: bridge
