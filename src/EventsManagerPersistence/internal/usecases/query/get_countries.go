@@ -7,23 +7,15 @@ type GetCountries interface {
 }
 
 type getCountries struct {
+	repository entity.CountryRepository
 }
 
-func NewGetCountries() GetCountries {
-	return &getCountries{}
+func NewGetCountries(repository entity.CountryRepository) GetCountries {
+	return &getCountries{
+		repository: repository,
+	}
 }
 
 func (query *getCountries) Handle() *[]entity.Country {
-	return &[]entity.Country{
-		{
-			Id:   "1",
-			Code: "BR",
-			Name: "BR",
-		},
-		{
-			Id:   "2",
-			Code: "USA",
-			Name: "USA",
-		},
-	}
+	return query.repository.GetAll()
 }

@@ -5,3 +5,7 @@ type Country struct {
 	Code string
 	Name string
 }
+
+type CountryRepository interface {
+	GetAll() *[]Country
+}
